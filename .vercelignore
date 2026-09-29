@@ -1,0 +1,8 @@
+# Never upload local personal data or secrets when deploying from this folder
+data/
+.env*
+!.env.example
+scripts/test-account.txt
+.agents/
+.claude/
+skills-lock.json

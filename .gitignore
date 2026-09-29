@@ -17,3 +17,8 @@ data/
 scripts/test-account.txt
 .vercel
 .DS_Store
+
+# tool files added by the Vercel CLI
+.agents/
+.claude/skills/
+skills-lock.json
