@@ -262,7 +262,7 @@ function demoRewrite(jobText: string, analysis: Analysis, cv: CVData, profile: P
 }
 
 /** Facts come from the original; only wording/selection comes from the rewrite. Everything is validated. */
-function mergeRewrite(original: CVData, rw: RewriteResult, format: CVFormat, profile: Profile): RewriteOutput {
+function mergeRewrite(original: CVData, rw: RewriteResult, format: CVFormat, profile: Profile, jobTitle = ""): RewriteOutput {
   const source = cvText(original, profile);
   const sourceLower = source.toLowerCase();
   const flags: Record<string, string[]> = {};
@@ -275,6 +275,12 @@ function mergeRewrite(original: CVData, rw: RewriteResult, format: CVFormat, pro
   if (rw.headline.trim()) {
     cv.headline = rw.headline.trim();
     flag("headline", cv.headline, original.headline);
+    // Presenting yourself with the target job's title is a claim — only allowed if you held that role.
+    const target = jobTitle.trim().toLowerCase();
+    const held = original.experience.some((e) => e.title.toLowerCase().includes(target) || target.includes(e.title.toLowerCase()));
+    if (target.length > 3 && cv.headline.toLowerCase().includes(target) && !held) {
+      flags.headline = [...(flags.headline ?? []), `Uses the job title “${jobTitle}”, which isn't one of your past roles — describe what you have actually done instead`];
+    }
   }
   if (rw.summary.trim()) {
     cv.summary = rw.summary.trim();
@@ -293,7 +299,9 @@ function mergeRewrite(original: CVData, rw: RewriteResult, format: CVFormat, pro
   const known = new Set(original.skills.map((s) => s.toLowerCase()));
   const dropped: string[] = [];
   const skills = [...new Set(rw.skills.map((s) => s.trim()).filter(Boolean))].filter((s) => {
-    const ok = known.has(s.toLowerCase()) || sourceLower.includes(s.toLowerCase());
+    // "Cleaning (siivous)": judge the skill itself; a bracketed translation is allowed.
+    const base = s.replace(/\s*\([^)]*\)\s*/g, " ").trim().toLowerCase();
+    const ok = Boolean(base) && (known.has(base) || sourceLower.includes(base));
     if (!ok) dropped.push(s);
     return ok;
   });
@@ -318,7 +326,7 @@ function mergeRewrite(original: CVData, rw: RewriteResult, format: CVFormat, pro
 export async function rewriteCV(jobText: string, analysis: Analysis, rawCV: CVData, profile: Profile, format: CVFormat): Promise<RewriteOutput> {
   const cv = normalizeCV(rawCV);
   const rw = engine() === "ai" ? await llmRewriteCV(jobText, analysis, cv, profile, format) : demoRewrite(jobText, analysis, cv, profile, format);
-  return mergeRewrite(cv, rw, format, profile);
+  return mergeRewrite(cv, rw, format, profile, analysis.job.title);
 }
 
 /** Deterministic trim to fit ~2 A4 pages. Only removes; never rewrites facts. */

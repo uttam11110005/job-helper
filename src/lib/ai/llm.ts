@@ -256,9 +256,14 @@ ${GROUNDING}
 WHAT YOU MAY CHANGE: headline, summary, experience bullets (wording, order, which bullets to keep), skills list, expertise areas.
 WHAT YOU MUST NOT CHANGE: job titles, employers, dates, education, certificates, languages, contact details (they are taken from the original automatically).
 
+LANGUAGE
+- Write the CV in the SAME language as the original CV (if the CV is in English, write English even when the job ad is in Finnish). Never translate the CV. A Finnish job term may be added in brackets, e.g. "cleaning (siivous)".
+- Write "note" in English.
+
 RULES
+- headline: built ONLY from job titles the applicant has actually held and skills they have. NEVER use the target job's title as the applicant's title unless they held that exact role (e.g. write "Room Attendant & Office Cleaner | Cleaning", not "Laitoshuoltaja").
 - Use each experience "id" exactly as given. Rewrite bullets only from what that role's original bullets say — never move a duty to a different job, never add tools, numbers, results or responsibilities.
-- skills: ONLY skills relevant to this job AND evidenced by the CV (skills list, bullets or education). 6–12 items, most relevant first. Do not list unrelated skills. Do not add job-ad keywords the CV doesn't support.
+- skills: ONLY skills relevant to this job AND evidenced by the CV (skills list, bullets or education), written with the CV's own wording (copy listed skills exactly; for skills taken from bullets use a short phrase that appears in the CV). 4–12 items, most relevant first. Do not list unrelated skills. Do not add job-ad keywords the CV doesn't support.
 - Use the job ad's terminology where it truthfully fits the applicant's real experience (a Finnish term in brackets is fine).
 - The whole CV must fit on at most 2 A4 pages: keep it concise (about 25 bullets in total at most).
 ${formatRules}`,

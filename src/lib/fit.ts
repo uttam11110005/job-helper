@@ -28,12 +28,14 @@ export function fitCounts(a: Analysis) {
  * Missing = 0; Unknown (e.g. personality traits) is left out.
  */
 export function guidanceIndicator(a: Analysis): number | null {
+  // Language requirements are scored once, from the language panel, when it exists.
+  const reqs = a.languages.length ? a.requirements.filter((r) => r.kind !== "language") : a.requirements;
   const required: FitStatus[] = [
-    ...a.requirements.filter((r) => r.category !== "preferred").map((r) => r.status),
+    ...reqs.filter((r) => r.category !== "preferred").map((r) => r.status),
     ...a.languages.filter((l) => l.mandatory).map((l) => l.status),
   ].filter((s) => s !== "unknown");
   const preferred: FitStatus[] = [
-    ...a.requirements.filter((r) => r.category === "preferred").map((r) => r.status),
+    ...reqs.filter((r) => r.category === "preferred").map((r) => r.status),
     ...a.languages.filter((l) => !l.mandatory).map((l) => l.status),
   ].filter((s) => s !== "unknown");
   const coverage = (xs: FitStatus[]) => xs.reduce((sum, s) => sum + (s === "match" ? 1 : s === "partial" ? 0.5 : 0), 0) / xs.length;

@@ -37,6 +37,7 @@ interface Provider {
   keyEnv: string;
   model: string;
   visionModel: string;
+  fallbackModel?: string; // used when the main model is overloaded (503/429)
   jsonSchema: boolean; // supports response_format json_schema reliably
 }
 
@@ -46,8 +47,9 @@ const PROVIDERS: Record<ProviderId, Provider> = {
     label: "Google Gemini (free tier)",
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai",
     keyEnv: "GEMINI_API_KEY",
-    model: "gemini-flash-latest",
-    visionModel: "gemini-flash-latest",
+    model: "gemini-2.5-flash",
+    visionModel: "gemini-2.5-flash",
+    fallbackModel: "gemini-2.5-flash-lite",
     jsonSchema: true,
   },
   groq: {
@@ -145,13 +147,13 @@ export async function structured<T>(opts: {
   const hasImages = Array.isArray(opts.user) && opts.user.some((c) => c.type === "image_url");
   const model = hasImages ? process.env.AI_VISION_MODEL?.trim() || p.visionModel : process.env.AI_MODEL?.trim() || p.model;
 
-  const call = async (mode: "schema" | "object") => {
+  const call = async (mode: "schema" | "object", modelId = model) => {
     const system =
       mode === "object"
         ? `${opts.system}\n\nReply with ONLY a JSON object that matches this JSON Schema exactly (all keys present):\n${JSON.stringify(opts.schema)}`
         : opts.system;
     const body = {
-      model,
+      model: modelId,
       temperature: opts.temperature ?? 0.2,
       messages: [
         { role: "system", content: system },
@@ -178,8 +180,11 @@ export async function structured<T>(opts: {
     }
   };
 
-  let res = await call(p.jsonSchema ? "schema" : "object");
+  const mode = p.jsonSchema ? "schema" : "object";
+  let res = await call(mode);
   if (res.status === 400 && p.jsonSchema) res = await call("object"); // schema feature rejected → JSON mode
+  // Free tiers get overloaded at peak times — switch to the lighter model rather than fail.
+  if ((res.status === 503 || res.status === 429) && p.fallbackModel && p.fallbackModel !== model) res = await call(mode, p.fallbackModel);
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`AI ${res.status} (${p.label}): ${text.slice(0, 300)}`);
