@@ -1,0 +1,19 @@
+# dependencies & build output
+node_modules
+.next
+out
+*.tsbuildinfo
+next-env.d.ts
+
+# local data — contains personal data (CVs, job ads, accounts). Never commit.
+data/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# local-only files
+scripts/test-account.txt
+.vercel
+.DS_Store

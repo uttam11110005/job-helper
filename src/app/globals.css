@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ───────── Design tokens (semantic; components never use raw hex) ───────── */
+:root {
+  --bg: #f5f7fa;
+  --bg-sunken: #edf1f6;
+  --card: #ffffff;
+  --ink: #0b1b33;
+  --ink-2: #33415a;
+  --muted: #5a6880;
+  --border: #dde3ec;
+  --border-strong: #c5cfdd;
+
+  --primary: #0b5cad;
+  --primary-hover: #094c8f;
+  --primary-ink: #ffffff;
+  --primary-soft: #e8f1fb;
+  --primary-soft-ink: #0a4a8c;
+
+  --match: #146c36;
+  --match-bg: #e5f5eb;
+  --partial: #8a4b06;
+  --partial-bg: #fdf1dc;
+  --missing: #a61b1b;
+  --missing-bg: #fdeaea;
+  --unknown: #4a5568;
+  --unknown-bg: #eceff4;
+
+  --add-bg: #dff3e6;
+  --del-bg: #fbe3e3;
+
+  /* App suggestions: one distinct colour everywhere the app proposes text */
+  --suggest: #6d28d9;
+  --suggest-bg: #efe8fd;
+  --suggest-border: #c9b5f7;
+
+  --focus: #0b5cad;
+  --shadow-sm: 0 1px 2px rgb(11 27 51 / 0.05);
+  --shadow-md: 0 4px 16px -4px rgb(11 27 51 / 0.1), 0 1px 3px rgb(11 27 51 / 0.06);
+  --shadow-lg: 0 24px 48px -12px rgb(11 27 51 / 0.25);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a111e;
+    --bg-sunken: #070d18;
+    --card: #101a2b;
+    --ink: #e8eef7;
+    --ink-2: #c3cddd;
+    --muted: #93a2ba;
+    --border: #213049;
+    --border-strong: #2e4262;
+    --primary: #5ea5f2;
+    --primary-hover: #7ab6f5;
+    --primary-ink: #04121f;
+    --primary-soft: #132a45;
+    --primary-soft-ink: #a9cdf7;
+    --match: #6fd99b;
+    --match-bg: #0f2e1d;
+    --partial: #f3be6b;
+    --partial-bg: #33230b;
+    --missing: #f59a9a;
+    --missing-bg: #3a1414;
+    --unknown: #b3bfd1;
+    --unknown-bg: #1c2638;
+    --add-bg: #133622;
+    --del-bg: #3b1818;
+    --suggest: #c4b1fb;
+    --suggest-bg: #2a1f4d;
+    --suggest-border: #5b45a3;
+    --focus: #7ab6f5;
+    --shadow-md: 0 4px 16px -4px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 24px 48px -12px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0a111e;
+  --bg-sunken: #070d18;
+  --card: #101a2b;
+  --ink: #e8eef7;
+  --ink-2: #c3cddd;
+  --muted: #93a2ba;
+  --border: #213049;
+  --border-strong: #2e4262;
+  --primary: #5ea5f2;
+  --primary-hover: #7ab6f5;
+  --primary-ink: #04121f;
+  --primary-soft: #132a45;
+  --primary-soft-ink: #a9cdf7;
+  --match: #6fd99b;
+  --match-bg: #0f2e1d;
+  --partial: #f3be6b;
+  --partial-bg: #33230b;
+  --missing: #f59a9a;
+  --missing-bg: #3a1414;
+  --unknown: #b3bfd1;
+  --unknown-bg: #1c2638;
+  --add-bg: #133622;
+  --del-bg: #3b1818;
+  --suggest: #c4b1fb;
+  --suggest-bg: #2a1f4d;
+  --suggest-border: #5b45a3;
+  --focus: #7ab6f5;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-sunken: var(--bg-sunken);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-ink: var(--primary-soft-ink);
+  --color-match: var(--match);
+  --color-match-bg: var(--match-bg);
+  --color-partial: var(--partial);
+  --color-partial-bg: var(--partial-bg);
+  --color-missing: var(--missing);
+  --color-missing-bg: var(--missing-bg);
+  --color-unknown: var(--unknown);
+  --color-unknown-bg: var(--unknown-bg);
+  --color-add: var(--add-bg);
+  --color-del: var(--del-bg);
+  --color-suggest: var(--suggest);
+  --color-suggest-bg: var(--suggest-bg);
+  --color-suggest-border: var(--suggest-border);
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --shadow-soft: var(--shadow-md);
+  --shadow-float: var(--shadow-lg);
+}
+
+/* ───────── Base ───────── */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+p { text-wrap: pretty; }
+::selection { background: var(--primary-soft); color: var(--primary-soft-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ───────── Motion primitives ───────── */
+
+/* Press feedback: any pressable gets a subtle scale (Emil: 0.97, 160ms ease-out). */
+.pressable {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+}
+.pressable:active:not(:disabled) { transform: scale(0.97); }
+
+/* Entrance for rarely-seen content (results appearing after analysis). */
+.enter {
+  animation: enter 280ms var(--ease-out) both;
+}
+.enter-stagger > * {
+  animation: enter 280ms var(--ease-out) both;
+}
+.enter-stagger > *:nth-child(2) { animation-delay: 40ms; }
+.enter-stagger > *:nth-child(3) { animation-delay: 80ms; }
+.enter-stagger > *:nth-child(4) { animation-delay: 120ms; }
+.enter-stagger > *:nth-child(5) { animation-delay: 160ms; }
+.enter-stagger > *:nth-child(n + 6) { animation-delay: 200ms; }
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Native <dialog> with @starting-style — interruptible, no JS mount state. */
+dialog.sheet {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 240ms var(--ease-out),
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+}
+dialog.sheet:not([open]) {
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transition-duration: 150ms; /* exit faster than enter */
+}
+@starting-style {
+  dialog.sheet[open] { opacity: 0; transform: translateY(8px) scale(0.97); }
+}
+dialog.sheet::backdrop {
+  background: rgb(7 13 24 / 0.5);
+  opacity: 1;
+  transition: opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete;
+}
+dialog.sheet:not([open])::backdrop { opacity: 0; }
+@starting-style {
+  dialog.sheet[open]::backdrop { opacity: 0; }
+}
+
+/* Spinner: fast rotation reads as "fast loading". */
+.spin { animation: spin 650ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Indeterminate progress bar for long AI calls. */
+.progress-indeterminate {
+  position: relative;
+  overflow: hidden;
+}
+.progress-indeterminate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: var(--primary);
+  border-radius: inherit;
+  animation: indeterminate 1.1s var(--ease-in-out) infinite;
+}
+@keyframes indeterminate {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+/* Hover only where hover exists. */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift { transition: border-color 150ms ease, box-shadow 200ms var(--ease-out); }
+  .hover-lift:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter, .enter-stagger > * { animation: fade 200ms ease both; }
+  .pressable:active:not(:disabled) { transform: none; }
+  dialog.sheet, dialog.sheet:not([open]) { transform: none; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* ───────── Print (CV export) ───────── */
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: #fff !important; color: #0b1b33 !important; }
+  .no-print { display: none !important; }
+  /* Sheets carry their own inner padding so coloured sidebars can bleed to the page edge. */
+  .print-sheet { box-shadow: none !important; border: none !important; border-radius: 0 !important; margin: 0 !important; max-width: none !important; width: 210mm !important; }
+}
+
+/* Keep CV colours (sidebars, accents, photo rings) when printing to PDF. */
+.print-sheet, .print-sheet * {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
